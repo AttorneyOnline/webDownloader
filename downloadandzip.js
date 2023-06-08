@@ -1,26 +1,21 @@
 // stolen from https://huynvk.dev/blog/download-files-and-zip-them-in-your-browsers-using-javascript
-import Promise from 'bluebird';
 import JsZip from 'jszip';
 import FileSaver from 'file-saver';
 
-const download = url => {
-  return fetch(url).then(resp => resp.blob());
+const download = async (url) => {
+  return fetch(url).then(resp => {
+  const filename = url.split('/').pop()
+  return {
+    filename: filename,
+    blob: resp.blob()
+  }
+  });
 };
 
-const downloadByGroup = (urls, files_per_group=5) => {
-  return Promise.map(
-    urls, 
-    async url => {
-      return await download(url);
-    },
-    {concurrency: files_per_group}
-  );
-}
-
-const exportZip = blobs => {
+const exportZip = blobData => {
   const zip = JsZip();
-  blobs.forEach((blob, i) => {
-    zip.file(`file-${i}.csv`, blob);
+  blobData.forEach((blob) => {
+    zip.file(`${blob.filename}`, blob.blob);
   });
   zip.generateAsync({type: 'blob'}).then(zipFile => {
     const currentDate = new Date().getTime();
@@ -29,6 +24,6 @@ const exportZip = blobs => {
   });
 }
 
-const downloadAndZip = urls => {
-  return downloadByGroup(urls, 5).then(exportZip);
+export const downloadAndZip = urls => {
+  Promise.all(urls.map(download)).then(exportZip)
 }
