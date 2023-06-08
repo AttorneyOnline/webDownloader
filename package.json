@@ -4,5 +4,22 @@
     "file-saver": "^2.0.5",
     "jszip": "^3.10.1",
     "parse-apache-directory-index": "^4.0.0"
-  }
+  },
+  "name": "webdownloader",
+  "version": "1.0.0",
+  "main": "downloadandzip.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AttorneyOnline/webDownloader.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AttorneyOnline/webDownloader/issues"
+  },
+  "homepage": "https://github.com/AttorneyOnline/webDownloader#readme",
+  "description": ""
 }
