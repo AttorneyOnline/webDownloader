@@ -86,7 +86,10 @@ export const getCharacterUrls = async () => {
         failureText.innerHTML = "Please choose a valid name from the dropdown provided."
         return
     }
-
+    // Disable button so cant click multiple times
+    document.getElementById('downloadButton').disabled = true
+    document.getElementById('buttonText').style.display = 'none'
+    document.getElementById('buttonLoading').style.display = 'block';
     const validUrls = await crawl(`${BASE_URL}${characterName}/`, 0, 99)
     await downloadAndZip(validUrls);
     return

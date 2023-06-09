@@ -23,10 +23,15 @@ const exportZip = blobData => {
   zip.generateAsync({type: 'blob'}).then(zipFile => {
     const currentDate = new Date().getTime();
     const fileName = `${charname}.zip`;
+
     return FileSaver.saveAs(zipFile, fileName);
   });
 }
 
 export const downloadAndZip = urls => {
-  Promise.all(urls.map(download)).then(exportZip)
+  Promise.all(urls.map(download)).then(exportZip).finally(() => {
+    document.getElementById('buttonText').style.display = 'block'
+    document.getElementById('buttonLoading').style.display = 'none';
+    document.getElementById('downloadButton').disabled = false
+  })
 }
