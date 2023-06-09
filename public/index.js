@@ -95,7 +95,9 @@ export const getCharacterUrls = async () => {
 window.characters = []
 const createCharactersForDropdown = async () => {
     const allCharacterNames = await getAllCharacterNames()
-    window.characters = allCharacterNames
+    const uniqueNames = new Set(allCharacterNames)
+
+    window.characters = Array.from(uniqueNames)
     document.getElementById('loadingContainer').style.display = 'none'
     document.getElementById('searchCharacter').style.display = "block"
 }
@@ -106,10 +108,11 @@ export const searchForCharacters = () => {
     const userInput = document.getElementById('characterNameInput').value
     const searcher = new FuzzySearch(window.characters)
     window.sortedCharacters = searcher.search(userInput)
+    tempExample.innerHTML = ""
     document.getElementById('characterSearchResults').innerHTML = `${window.sortedCharacters.length} / ${window.characters.length}`
     if (window.sortedCharacters.length < 100) {
         window.sortedCharacters.forEach(character => {
-            tempExample.innerHTML += `<option value=${character}>`
+            tempExample.innerHTML += `<option value="${character}"></option>`
         });
     } else if (window.sortedCharacters.length > 100){
         tempExample.innerHTML = "Too many characters like this! Filter better."
