@@ -14,14 +14,15 @@ const download = async (url) => {
 
 const exportZip = blobData => {
   const zip = JsZip();
-  const charfolder = zip.folder(document.getElementById('characterNameInput').value)
+  const charname = document.getElementById('characterNameInput').value;
+  const charfolder = zip.folder(charname)
   console.log(charfolder)
   blobData.forEach((blob) => {
     charfolder.file(`${blob.filename}`, blob.blob);
   });
   zip.generateAsync({type: 'blob'}).then(zipFile => {
     const currentDate = new Date().getTime();
-    const fileName = `combined-${currentDate}.zip`;
+    const fileName = `${charname}.zip`;
     return FileSaver.saveAs(zipFile, fileName);
   });
 }
