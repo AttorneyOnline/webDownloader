@@ -106,8 +106,7 @@ export const searchForCharacters = () => {
     const userInput = document.getElementById('characterNameInput').value
     const searcher = new FuzzySearch(window.characters)
     window.sortedCharacters = searcher.search(userInput)
-    console.log(window.sortedCharacters)
-    tempExample.innerHTML = ""
+    document.getElementById('characterSearchResults').innerHTML = `${window.sortedCharacters.length} / ${window.characters.length}`
     if (window.sortedCharacters.length < 100) {
         window.sortedCharacters.forEach(character => {
             tempExample.innerHTML += `<option value=${character}>`
