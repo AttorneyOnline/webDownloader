@@ -76,20 +76,18 @@ const getAllCharacterNames = async () => {
 }
 
 export const getCharacterUrls = async () => {
-    tempExample.innerHTML = ""
     const characterName = document.getElementById('characterNameInput').value
     const validUrls = await crawl(`${BASE_URL}${characterName}/`, 0, 99)
-    tempExample.innerHTML = "Downloading..."
     await downloadAndZip(validUrls);
-    tempExample.innerHTML = "Downloaded!"
     return
 }
+
 window.characters = []
 const createCharactersForDropdown = async () => {
-    console.log('Hold my beer')
     const allCharacterNames = await getAllCharacterNames()
     window.characters = allCharacterNames
-    console.log('Done!')
+    document.getElementById('loadingContainer').style.display = 'none'
+    document.getElementById('searchCharacter').style.display = "block"
 }
 
 window.sortedCharacters = []

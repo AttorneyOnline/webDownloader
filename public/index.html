@@ -24,16 +24,26 @@
             <h1>WebAO Character Downloader</h1>
 
             <div class="card-body">
-              
+              <!-- Loading -->
+              <div id="loadingContainer">
+              <p class="">Loading characters...</p>
+
+              <div class="container d-flex align-items-center justify-content-center">
+                <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+              </div>
+            </div>
+              <!-- Loading -->
+              <div id="searchCharacter" style="display: none;">
               <input list="hintedCharacters" placeholder="Enter a characters name..." class="form-control" type="text"
                 oninput="lib.searchForCharacters()" name="charname" id="characterNameInput">
               <datalist id="hintedCharacters"></datalist>
               <br />
-              <div class="container d-flex align-items-center justify-content-center">
 
+              <div class="container d-flex align-items-center justify-content-center">
               <button class="btn btn-primary btn-lg" onclick="lib.getCharacterUrls()">Download</button>
                 </div>
             </div>
+          </div>
           </div>
         </div>
       </div>
