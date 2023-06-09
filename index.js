@@ -115,6 +115,7 @@ window.setTimeout(function() { createCharactersForDropdown() }, 0);
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 if(urlParams.has('char')) {
+    console.log('Starting autodownload')
     document.getElementById('characterNameInput').value = urlParams.get('char')
     getCharacterUrls()
 }
