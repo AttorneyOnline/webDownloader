@@ -18,7 +18,7 @@ const exportZip = blobData => {
   const charfolder = zip.folder(charname)
   console.log(charfolder)
   blobData.forEach((blob) => {
-    charfolder.file(`${blob.filename}`, blob.blob);
+    charfolder.file(`${decodeURI(blob.filename)}`, blob.blob);
   });
   zip.generateAsync({type: 'blob'}).then(zipFile => {
     const currentDate = new Date().getTime();
