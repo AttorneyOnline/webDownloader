@@ -14,8 +14,10 @@ const download = async (url) => {
 
 const exportZip = blobData => {
   const zip = JsZip();
+  const charfolder = zip.folder(document.getElementById('characterNameInput').value)
+  console.log(charfolder)
   blobData.forEach((blob) => {
-    zip.file(`${blob.filename}`, blob.blob);
+    charfolder.file(`${blob.filename}`, blob.blob);
   });
   zip.generateAsync({type: 'blob'}).then(zipFile => {
     const currentDate = new Date().getTime();

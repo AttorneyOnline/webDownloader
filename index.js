@@ -80,7 +80,7 @@ export const getCharacterUrls = async () => {
     const characterName = document.getElementById('characterNameInput').value
     const validUrls = await crawl(`${BASE_URL}${characterName}/`, 0, 99)
     tempExample.innerHTML = "Downloading..."
-    downloadAndZip(validUrls);
+    await downloadAndZip(validUrls);
     tempExample.innerHTML = "Downloaded!"
     return
 }
