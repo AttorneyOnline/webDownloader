@@ -1,0 +1,25 @@
+@font-face { font-family: Oswald; src: './Oswald-VariableFont_wght.ttf'; } 
+* {
+    font-family: 'Oswald';
+}
+
+html {
+    height: 100%;
+}
+body {
+    height: 100%;
+    width: 100%;
+}
+.jumbotron {
+	color: white;
+	background-image: url("./img/background-image.webp");
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	margin-bottom: 0px;
+	padding-bottom: 0;
+    width: 100%;
+	height: 100%;
+	text-align: center;
+	position: relative;
+}

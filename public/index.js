@@ -1,5 +1,5 @@
 import FuzzySearch from 'fuzzy-search';
-const { downloadAndZip } = require("./downloadandzip")
+const { downloadAndZip } = require("../downloadandzip")
 import "./index.css";
 const tempExample = document.getElementById('hintedCharacters')
 
@@ -102,7 +102,7 @@ export const searchForCharacters = () => {
     tempExample.innerHTML = ""
     if (window.sortedCharacters.length < 100) {
         window.sortedCharacters.forEach(character => {
-            tempExample.innerHTML += `<br />${character}`
+            tempExample.innerHTML += `<option value=${character}>`
         });
     } else if (window.sortedCharacters.length > 100){
         tempExample.innerHTML = "Too many characters like this! Filter better."
