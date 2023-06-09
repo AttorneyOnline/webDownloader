@@ -75,8 +75,18 @@ const getAllCharacterNames = async () => {
     return validLinks
 }
 
+const failureText = document.getElementById('downloadFeedback')
 export const getCharacterUrls = async () => {
+    failureText.innerHTML = ""
     const characterName = document.getElementById('characterNameInput').value
+    if (window.sortedCharacters.length === 0) {
+        failureText.innerHTML = "Please select a valid character name" 
+        return
+    } else if (!window.sortedCharacters.includes(characterName)) {
+        failureText.innerHTML = "Please choose a valid name from the dropdown provided."
+        return
+    }
+
     const validUrls = await crawl(`${BASE_URL}${characterName}/`, 0, 99)
     await downloadAndZip(validUrls);
     return
