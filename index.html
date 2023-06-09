@@ -42,7 +42,10 @@
               <br />
 
               <div class="container d-flex align-items-center justify-content-center">
-              <button class="btn btn-primary btn-lg" onclick="lib.getCharacterUrls()">Download</button>
+              <button class="btn btn-primary btn-lg" id="downloadButton" onclick="lib.getCharacterUrls()">
+                <div id="buttonLoading" style="display: none;" class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+                <div id="buttonText">Download</div>
+              </button>
                 </div>
                 <div id="downloadFeedback" class="text-warning" >
                 </div>
