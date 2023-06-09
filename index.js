@@ -112,4 +112,9 @@ export const searchForCharacters = () => {
 }
 window.setTimeout(function() { createCharactersForDropdown() }, 0);
 
-
+const queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
+if(urlParams.has('char')) {
+    document.getElementById('characterNameInput').value = urlParams.get('char')
+    getCharacterUrls()
+}
