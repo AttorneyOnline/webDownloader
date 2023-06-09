@@ -1,0 +1,15 @@
+<html>
+
+<head>
+    <script defer src="app.js"></script>
+    <title>Character Downloader</title>
+</head>
+
+<body>
+    character name?
+    <input type="text" oninput="lib.searchForCharacters()" name="charname" id="characterNameInput">
+    <div id="hintedCharacters"></div>
+    <button onclick="lib.getCharacterUrls()">Submit</button>
+</body>
+
+</html>
