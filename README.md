@@ -8,6 +8,7 @@ To run this locally:
 1. `nvm use`
 2. `npm ci`
 3. `npm run dev-server`
+4. Visit `http://localhost:8080`
 
 ### Creating a production build
 Running `npm run build` will build the /dist folder which is ready for static content hosting.
