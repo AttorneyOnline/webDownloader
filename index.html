@@ -7,7 +7,8 @@
 
 <body>
     character name?
-    <input type="text" name="charname" id="characterNameInput">
+    <input type="text" oninput="lib.searchForCharacters()" name="charname" id="characterNameInput">
+    <div id="hintedCharacters"></div>
     <button onclick="lib.getCharacterUrls()">Submit</button>
 </body>
 
