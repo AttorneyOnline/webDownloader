@@ -1,5 +1,5 @@
 import FuzzySearch from 'fuzzy-search';
-const { downloadAndZip } = require("../downloadandzip")
+import { downloadAndZip } from '../downloadandzip';
 import "./index.css";
 const tempExample = document.getElementById('hintedCharacters')
 
@@ -12,7 +12,6 @@ const IGNORE_VALUES = new Set([
     "Description",
     "Parent Directory"
 ])
-
 const crawl = async (url, currentDepth, maximumDepth) => {
     if (currentDepth > maximumDepth) {
         return
@@ -91,7 +90,7 @@ export const getCharacterUrls = async () => {
     document.getElementById('buttonText').style.display = 'none'
     document.getElementById('buttonLoading').style.display = 'block';
     const validUrls = await crawl(`${BASE_URL}${characterName}/`, 0, 99)
-    await downloadAndZip(validUrls);
+    await downloadAndZip(characterName, validUrls);
     return
 }
 
@@ -123,13 +122,17 @@ export const searchForCharacters = () => {
         tempExample.innerHTML = "We cant find any characters with that name."
     } 
 }
-window.setTimeout(function() { createCharactersForDropdown() }, 0);
+createCharactersForDropdown()
 
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 if(urlParams.has('char')) {
-    console.log('Starting autodownload')
-    document.getElementById('characterNameInput').value = urlParams.get('char')
-    searchForCharacters()
-    getCharacterUrls()
+    console.log('fuck')
+    const characterName = urlParams.get('char')
+    document.getElementById('characterNameInput').value = characterName
+    const validUrls = await crawl(`${BASE_URL}${characterName}/`, 0, 99)
+    document.getElementById('downloadButton').disabled = true
+    document.getElementById('buttonText').style.display = 'none'
+    document.getElementById('buttonLoading').style.display = 'block';
+    await downloadAndZip(characterName, validUrls);
 }

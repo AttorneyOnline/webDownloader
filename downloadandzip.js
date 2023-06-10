@@ -12,9 +12,10 @@ const download = async (url) => {
   });
 };
 
-const exportZip = blobData => {
+const exportZip = (specificName, blobData) => {
   const zip = JsZip();
-  const charname = document.getElementById('characterNameInput').value;
+  // const urlSearchParams = new URLSearchParams(window.location.search);
+  const charname = specificName;
   const charfolder = zip.folder(charname)
   console.log(charfolder)
   blobData.forEach((blob) => {
@@ -28,8 +29,8 @@ const exportZip = blobData => {
   });
 }
 
-export const downloadAndZip = urls => {
-  Promise.all(urls.map(download)).then(exportZip).finally(() => {
+export const downloadAndZip = (specificName, urls) => {
+  Promise.all(urls.map(download)).then(blobData => exportZip(specificName, blobData)).finally(() => {
     document.getElementById('buttonText').style.display = 'block'
     document.getElementById('buttonLoading').style.display = 'none';
     document.getElementById('downloadButton').disabled = false
