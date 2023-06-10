@@ -127,7 +127,6 @@ createCharactersForDropdown()
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 if(urlParams.has('char')) {
-    console.log('fuck')
     const characterName = urlParams.get('char')
     document.getElementById('characterNameInput').value = characterName
     const validUrls = await crawl(`${BASE_URL}${characterName}/`, 0, 99)

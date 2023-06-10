@@ -17,7 +17,6 @@ const exportZip = (specificName, blobData) => {
   // const urlSearchParams = new URLSearchParams(window.location.search);
   const charname = specificName;
   const charfolder = zip.folder(charname)
-  console.log(charfolder)
   blobData.forEach((blob) => {
     charfolder.file(`${decodeURI(blob.filename)}`, blob.blob);
   });
