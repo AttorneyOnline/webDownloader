@@ -130,5 +130,6 @@ const urlParams = new URLSearchParams(queryString);
 if(urlParams.has('char')) {
     console.log('Starting autodownload')
     document.getElementById('characterNameInput').value = urlParams.get('char')
+    searchForCharacters()
     getCharacterUrls()
 }
