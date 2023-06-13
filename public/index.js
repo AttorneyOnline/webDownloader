@@ -4,7 +4,7 @@ import "./index.css";
 const tempExample = document.getElementById('hintedCharacters')
 
 // const parse = import('parse-apache-directory-index');
-const BASE_URL = "https://attorneyoffline.de/base/characters/"
+export const BASE_URL = "https://attorneyoffline.de/base/characters/"
 const IGNORE_VALUES = new Set([
     "Name",
     "Last modified",
