@@ -7,7 +7,7 @@ module.exports = {
   mode: 'development',
   output: {
     path: path.resolve(__dirname, './dist'),
-    filename: 'app.js',
+    filename: 'index.js',
     library: 'lib'
   },
   module: {
