@@ -34,13 +34,12 @@
               <div id="searchCharacter" style="display: none;">
                 <div class="container" id="characterSearchResults">
                 </div>
-              <input list="hintedCharacters" placeholder="Enter a characters name..." class="form-control" type="text"
-                oninput="lib.searchForCharacters()" name="charname" id="characterNameInput">
+              <input list="hintedCharacters" placeholder="Enter a characters name..." class="form-control" type="text" name="charname" id="characterNameInput">
               <datalist id="hintedCharacters"></datalist>
               <br />
 
               <div class="container d-flex align-items-center justify-content-center">
-              <button class="btn btn-primary btn-lg" id="downloadButton" onclick="lib.getCharacterUrls()">
+              <button class="btn btn-primary btn-lg" id="downloadButton">
                 <div id="buttonLoading" style="display: none;" class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
                 <div id="buttonText">Download</div>
               </button>

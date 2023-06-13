@@ -93,6 +93,7 @@ export const getCharacterUrls = async () => {
     await downloadAndZip(characterName, validUrls);
     return
 }
+document.getElementById('downloadButton').onclick = getCharacterUrls
 
 window.characters = []
 const createCharactersForDropdown = async () => {
@@ -105,7 +106,6 @@ const createCharactersForDropdown = async () => {
 }
 
 window.sortedCharacters = []
-
 export const searchForCharacters = () => {
     const userInput = document.getElementById('characterNameInput').value
     const searcher = new FuzzySearch(window.characters)
@@ -122,6 +122,8 @@ export const searchForCharacters = () => {
         tempExample.innerHTML = "We cant find any characters with that name."
     } 
 }
+document.getElementById('characterNameInput').oninput = searchForCharacters
+
 createCharactersForDropdown()
 
 const queryString = window.location.search;
