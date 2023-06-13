@@ -20,7 +20,6 @@ const crawl = async (url, currentDepth, maximumDepth) => {
     if (response.status === 404) {
         return
     }
-
     // Create a fake webpage
     const websiteDirectoryPage = await response.text()
     const tempPage = document.createElement("html");
@@ -37,11 +36,10 @@ const crawl = async (url, currentDepth, maximumDepth) => {
         const newUrl = url + aTagValue
         // Crawl all directories,
         if (aTagValue.endsWith('/')) {
-            crawl(newUrl, currentDepth+1, maximumDepth)
+            validLinks.push(...await crawl(newUrl, currentDepth+1, maximumDepth))
         } else {
             validLinks.push(newUrl)
-        }
-        
+        }   
     }
     return validLinks
 }
