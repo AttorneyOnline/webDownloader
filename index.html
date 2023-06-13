@@ -1,1 +1,59 @@
-<!doctype html><html lang="en"><head><title>WebAO Character Downloader</title><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous"><script defer="defer" src="app.js"></script></head><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script><body class="h-100 bg-dark"><div class="jumbotron"><div class="h-100 container d-flex align-items-center justify-content-center"><div><div class="container d-flex align-items-center justify-content-center"><div class="card" style="width: 75%; margin: 5%; background-color: black; color: whitesmoke"><img class="card-img-top" src="./logo-new.svg" alt="Card image cap"><h1>WebAO Character Downloader</h1><div class="card-body"><div id="loadingContainer"><p class="">Loading characters...</p><div class="container d-flex align-items-center justify-content-center"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div></div><div id="searchCharacter" style="display: none;"><div class="container" id="characterSearchResults"></div><input list="hintedCharacters" placeholder="Enter a characters name..." class="form-control" oninput="lib.searchForCharacters()" name="charname" id="characterNameInput"><datalist id="hintedCharacters"></datalist><br/><div class="container d-flex align-items-center justify-content-center"><button class="btn btn-primary btn-lg" id="downloadButton" onclick="lib.getCharacterUrls()"><div id="buttonLoading" style="display: none;" class="lds-ellipsis"><div></div><div></div><div></div><div></div></div><div id="buttonText">Download</div></button></div><div id="downloadFeedback" class="text-warning"></div></div></div></div></div></div></div></div></body></html>
+<!doctype html>
+<html lang="en">
+
+<head>
+  <title>WebAO Character Downloader</title>
+
+  <!-- BOOTSTRAP -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+<script defer src="app.js"></script></head>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+
+<body class="h-100  bg-dark">
+  <div class="jumbotron">
+    <div class="h-100 container d-flex align-items-center justify-content-center">
+      <div>
+        <div class="container d-flex align-items-center justify-content-center">
+
+          <div class="card" style="width: 75%; margin: 5%; background-color: black; color: whitesmoke">
+            <img class="card-img-top" src="./logo-new.svg" alt="Card image cap">
+            <h1>WebAO Character Downloader</h1>
+
+            <div class="card-body">
+              <!-- Loading -->
+              <div id="loadingContainer">
+              <p class="">Loading characters...</p>
+
+              <div class="container d-flex align-items-center justify-content-center">
+                <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+              </div>
+            </div>
+              <!-- Loading -->
+              <div id="searchCharacter" style="display: none;">
+                <div class="container" id="characterSearchResults">
+                </div>
+              <input list="hintedCharacters" placeholder="Enter a characters name..." class="form-control" type="text"
+                oninput="lib.searchForCharacters()" name="charname" id="characterNameInput">
+              <datalist id="hintedCharacters"></datalist>
+              <br />
+
+              <div class="container d-flex align-items-center justify-content-center">
+              <button class="btn btn-primary btn-lg" id="downloadButton" onclick="lib.getCharacterUrls()">
+                <div id="buttonLoading" style="display: none;" class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+                <div id="buttonText">Download</div>
+              </button>
+                </div>
+                <div id="downloadFeedback" class="text-warning" >
+                </div>
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
