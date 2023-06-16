@@ -3,7 +3,7 @@ import { downloadAndZip, downloadAndZipBackgrounds } from '../downloadandzip';
 import "./index.css";
 const hintedCharacters = document.getElementById('hintedCharacters')
 const hintedBackgrounds = document.getElementById('hintedBackgrounds')
-// const parse = import('parse-apache-directory-index');
+
 const BASE_URL = "https://attorneyoffline.de/base/"
 export const BASE_CHARACTERS_URL = BASE_URL + "characters/"
 export const BASE_BACKGROUND_URL = BASE_URL + "background/"

@@ -3,8 +3,7 @@
     "bluebird": "^3.7.2",
     "file-saver": "^2.0.5",
     "fuzzy-search": "^3.2.1",
-    "jszip": "^3.10.1",
-    "parse-apache-directory-index": "^4.0.0"
+    "jszip": "^3.10.1"
   },
   "name": "webdownloader",
   "version": "1.0.0",
