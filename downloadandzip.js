@@ -1,11 +1,11 @@
 // stolen from https://huynvk.dev/blog/download-files-and-zip-them-in-your-browsers-using-javascript
 import JsZip from 'jszip';
 import FileSaver from 'file-saver';
-import { BASE_URL } from './public/index';
+import { BASE_CHARACTERS_URL } from './public/index';
 
 const download = async (url) => {
   return fetch(url).then(resp => {
-  const filename = url.slice(BASE_URL.length);  
+  const filename = url.slice(BASE_CHARACTERS_URL.length);  
   return {
     filename: filename,
     blob: resp.blob()
@@ -33,5 +33,12 @@ export const downloadAndZip = (specificName, urls) => {
     document.getElementById('buttonText').style.display = 'block'
     document.getElementById('buttonLoading').style.display = 'none';
     document.getElementById('downloadButton').disabled = false
+  })
+}
+export const downloadAndZipBackgrounds = (specificName, urls) => {
+  Promise.all(urls.map(download)).then(blobData => exportZip(specificName, blobData)).finally(() => {
+    document.getElementById('backgroundButtonText').style.display = 'block'
+    document.getElementById('backgourndButtonLoading').style.display = 'none';
+    document.getElementById('downloadBackgroundsButton').disabled = false
   })
 }

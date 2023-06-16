@@ -23,6 +23,7 @@ body {
 	height: 100%;
 	text-align: center;
 	position: relative;
+  overflow: scroll;
 }
 
 
