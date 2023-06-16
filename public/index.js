@@ -4,8 +4,9 @@ import "./index.css";
 const hintedCharacters = document.getElementById('hintedCharacters')
 const hintedBackgrounds = document.getElementById('hintedBackgrounds')
 // const parse = import('parse-apache-directory-index');
-export const BASE_CHARACTERS_URL = "https://attorneyoffline.de/base/characters/"
-export const BASE_BACKGROUND_URL = "https://attorneyoffline.de/base/background/"
+const BASE_URL = "https://attorneyoffline.de/base/"
+export const BASE_CHARACTERS_URL = BASE_URL + "characters/"
+export const BASE_BACKGROUND_URL = BASE_URL + "background/"
 const IGNORE_VALUES = new Set([
     "Name",
     "Last modified",
