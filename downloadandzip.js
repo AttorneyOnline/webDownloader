@@ -1,11 +1,11 @@
 // stolen from https://huynvk.dev/blog/download-files-and-zip-them-in-your-browsers-using-javascript
 import JsZip from 'jszip';
 import FileSaver from 'file-saver';
-import { BASE_CHARACTERS_URL } from './public/index';
+import { BASE_URL } from './public/index';
 
 const download = async (url) => {
   return fetch(url).then(resp => {
-  const filename = url.slice(BASE_CHARACTERS_URL.length);  
+  const filename = url.slice(BASE_URL.length);  
   return {
     filename: filename,
     blob: resp.blob()
@@ -20,6 +20,7 @@ const exportZip = (specificName, blobData) => {
   blobData.forEach((blob) => {
     zip.file(`${decodeURI(blob.filename)}`, blob.blob);
   });
+
   zip.generateAsync({type: 'blob'}).then(zipFile => {
     const currentDate = new Date().getTime();
     const fileName = `${charname}.zip`;

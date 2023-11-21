@@ -1,12 +1,14 @@
 import FuzzySearch from 'fuzzy-search';
+import ini from 'ini';
 import { downloadAndZip, downloadAndZipBackgrounds } from '../downloadandzip';
 import "./index.css";
 const hintedCharacters = document.getElementById('hintedCharacters')
 const hintedBackgrounds = document.getElementById('hintedBackgrounds')
 
-const BASE_URL = "https://attorneyoffline.de/base/"
+export const BASE_URL = "https://attorneyoffline.de/base/"
 export const BASE_CHARACTERS_URL = BASE_URL + "characters/"
 export const BASE_BACKGROUND_URL = BASE_URL + "background/"
+export const BASE_SOUNDS_URL = BASE_URL + "sounds/"
 const IGNORE_VALUES = new Set([
     "Name",
     "Last modified",
@@ -117,6 +119,28 @@ export const getCharacterUrls = async () => {
     document.getElementById('buttonText').style.display = 'none'
     document.getElementById('buttonLoading').style.display = 'block';
     const validUrls = await crawl(`${BASE_CHARACTERS_URL}${characterName}/`, 0, 99)
+
+    // include blip sound, SoundN and frameSFX files
+    await fetch(`${BASE_CHARACTERS_URL}${characterName}/char.ini`).then(resp => resp.blob()).then(blob => blob.text()).then(text => {
+      const charIni = ini.parse(text.toLowerCase());
+
+      const blip = (charIni.options.blips != null) ? charIni.options.blips : (charIni.options.gender != null) ? charIni.options.gender : null;
+      if (blip !== null)
+        validUrls.push(`${BASE_SOUNDS_URL}` + "blips/" + blip + ".opus");
+
+      for (const key in charIni) {
+        if (key !== "soundn" && !key.endsWith("_framesfx"))
+          continue;
+
+        for (const value in charIni[key]) {
+          const sfx = charIni[key][value];
+          const sfxUrl = `${BASE_SOUNDS_URL}` + "general/" + sfx + ".opus";
+          if (sfx != null && sfx != "0" && sfx != "1" && !validUrls.find((existing) => existing == sfxUrl))
+            validUrls.push(sfxUrl);
+        }
+      }
+    });
+
     await downloadAndZip(characterName, validUrls);
     return
 }
