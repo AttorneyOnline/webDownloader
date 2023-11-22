@@ -135,7 +135,7 @@ export const getCharacterUrls = async () => {
         for (const value in charIni[key]) {
           const sfx = charIni[key][value];
           const sfxUrl = `${BASE_SOUNDS_URL}` + "general/" + sfx + ".opus";
-          if (sfx != null && sfx != "0" && sfx != "1" && !validUrls.find((existing) => existing == sfxUrl))
+          if (sfx != null && sfx.length > 1 && !validUrls.find((existing) => existing == sfxUrl))
             validUrls.push(sfxUrl);
         }
       }
