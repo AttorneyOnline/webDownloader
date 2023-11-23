@@ -75,6 +75,36 @@ const getAllCharacterNames = async () => {
     }
     return validLinks
 }
+const getAllSfxs = async (url) => {
+    const response = await fetch(url)
+    if (response.status === 404) {
+        return
+    }
+
+    // Create a fake webpage
+    const websiteDirectoryPage = await response.text()
+    const tempPage = document.createElement("html");
+    tempPage.innerHTML = websiteDirectoryPage;
+
+    const tags = tempPage.getElementsByTagName('a')
+    var validLinks = []
+    for (const link of tags) {
+        const aTagValue = link.getAttribute('href')
+        if (IGNORE_VALUES.has(link.innerHTML) || aTagValue == "music/") {
+            continue
+        }
+
+        // Crawl all directories,
+        if (aTagValue.endsWith('/')) {
+            const extraLinks = await getAllSfxs(url + aTagValue);
+            if (extraLinks != null)
+                validLinks = validLinks.concat(extraLinks);
+        } else
+            validLinks.push(decodeURI(aTagValue));
+    }
+    return validLinks
+}
+
 const getAllBackgroundNames = async () => {
     const response = await fetch(`${BASE_BACKGROUND_URL}`)
     if (response.status === 404) {
@@ -122,23 +152,26 @@ export const getCharacterUrls = async () => {
 
     // include blip sound, SoundN and frameSFX files
     await fetch(`${BASE_CHARACTERS_URL}${characterName}/char.ini`).then(resp => resp.blob()).then(blob => blob.text()).then(text => {
-      const charIni = ini.parse(text.toLowerCase());
+        const charIni = ini.parse(text.toLowerCase());
 
-      const blip = (charIni.options.blips != null) ? charIni.options.blips : (charIni.options.gender != null) ? charIni.options.gender : null;
-      if (blip !== null)
-        validUrls.push(`${BASE_SOUNDS_URL}` + "blips/" + blip + ".opus");
+        const blip = (charIni.options.blips != null) ? charIni.options.blips : (charIni.options.gender != null) ? charIni.options.gender : null;
+        if (blip !== null && window.sfx.find((element) => element.includes(blip)))
+            validUrls.push(`${BASE_SOUNDS_URL}` + "blips/" + blip + ".opus");
 
-      for (const key in charIni) {
-        if (key !== "soundn" && !key.endsWith("_framesfx"))
-          continue;
+        for (const key in charIni) {
+            if (key !== "soundn" && !key.endsWith("_framesfx"))
+                continue;
 
-        for (const value in charIni[key]) {
-          const sfx = charIni[key][value];
-          const sfxUrl = `${BASE_SOUNDS_URL}` + "general/" + sfx + ".opus";
-          if (sfx != null && sfx.length > 1 && !validUrls.find((existing) => existing == sfxUrl))
-            validUrls.push(sfxUrl);
+            for (const value in charIni[key]) {
+                const sfx = charIni[key][value];
+                const sfxUrl = `${BASE_SOUNDS_URL}` + "general/" + sfx + ".opus";
+
+                if (sfx != null && sfx.length > 1 && !validUrls.find((existing) => existing == sfxUrl) && window.sfx.find((element) => element.includes(sfx)))
+                {
+                    validUrls.push(sfxUrl);
+                }
+            }
         }
-      }
     });
 
     await downloadAndZip(characterName, validUrls);
@@ -147,11 +180,18 @@ export const getCharacterUrls = async () => {
 document.getElementById('downloadButton').onclick = getCharacterUrls
 
 window.characters = []
+window.sfx = []
 const createCharactersForDropdown = async () => {
     const allCharacterNames = await getAllCharacterNames()
     const uniqueNames = new Set(allCharacterNames)
 
+    document.getElementById('loadingCharactersText').style.display = "none";
+    document.getElementById('loadingSfxText').style.display = "block";
+    const allSfxNames = await getAllSfxs(`${BASE_SOUNDS_URL}`)
+    const uniqueSfx = new Set(allSfxNames)
+
     window.characters = Array.from(uniqueNames)
+    window.sfx = Array.from(uniqueSfx)
     document.getElementById('loadingContainer').style.display = 'none'
     document.getElementById('searchCharacter').style.display = "block"
 }
