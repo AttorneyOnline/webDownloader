@@ -12,3 +12,4 @@ To run this locally:
 
 ### Creating a production build
 Running `npm run build` will build the /dist folder which is ready for static content hosting.
+.
