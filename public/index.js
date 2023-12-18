@@ -100,7 +100,7 @@ const getAllSfxs = async (url) => {
             if (extraLinks != null)
                 validLinks = validLinks.concat(extraLinks);
         } else
-            validLinks.push(decodeURI(aTagValue));
+            validLinks.push(decodeURI(url + aTagValue));
     }
     return validLinks
 }
