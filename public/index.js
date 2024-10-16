@@ -5,7 +5,20 @@ import "./index.css";
 const hintedCharacters = document.getElementById('hintedCharacters')
 const hintedBackgrounds = document.getElementById('hintedBackgrounds')
 
-export const BASE_URL = "https://attorneyoffline.de/base/"
+/* eslint @typescript-eslint/no-explicit-any: "warn" */
+
+interface QueryParams {
+    ip: string;
+    connect: string;
+    mode: string;
+    asset: string;
+    theme: string;
+    serverName: string;
+}
+
+const urlParams = new URLSearchParams(window.location.search);
+
+export const BASE_URL = urlParams.get("asset") || "https://attorneyoffline.de/base/"
 export const BASE_CHARACTERS_URL = BASE_URL + "characters/"
 export const BASE_BACKGROUND_URL = BASE_URL + "background/"
 export const BASE_SOUNDS_URL = BASE_URL + "sounds/"
@@ -48,8 +61,8 @@ const crawl = async (url, currentDepth, maximumDepth) => {
     return validLinks
 }
 
-const getAllCharacterNames = async () => {
-    const response = await fetch(`${BASE_CHARACTERS_URL}`)
+const getAllterNames = async () => {
+    const response = await fetch(`${BASE_TERS_URL}`)
     if (response.status === 404) {
         return
     }
@@ -266,8 +279,6 @@ document.getElementById('backgroundNameInput').oninput = searchForBackgrounds
 createCharactersForDropdown()
 createBackgroundsForDropdown()
 
-const queryString = window.location.search;
-const urlParams = new URLSearchParams(queryString);
 if(urlParams.has('char')) {
     const characterName = urlParams.get('char')
     document.getElementById('characterNameInput').value = characterName
