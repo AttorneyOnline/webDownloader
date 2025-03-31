@@ -7,6 +7,7 @@ const hintedBackgrounds = document.getElementById('hintedBackgrounds')
 
 /* eslint @typescript-eslint/no-explicit-any: "warn" */
 
+/*
 interface QueryParams {
     ip: string;
     connect: string;
@@ -15,6 +16,7 @@ interface QueryParams {
     theme: string;
     serverName: string;
 }
+*/
 
 const urlParams = new URLSearchParams(window.location.search);
 
@@ -29,10 +31,12 @@ const IGNORE_VALUES = new Set([
     "Description",
     "Parent Directory"
 ])
+
 const crawl = async (url, currentDepth, maximumDepth) => {
     if (currentDepth > maximumDepth) {
         return
     }
+    console.log(`${url}`);
     const response = await fetch(`${url}`)
     if (response.status === 404) {
         return
@@ -45,12 +49,14 @@ const crawl = async (url, currentDepth, maximumDepth) => {
     const tags = tempPage.getElementsByTagName('a')
     const validLinks = []
     for (const link of tags) {
-        const aTagValue = link.getAttribute('href')
+        const aTagValue = link.getAttribute('href');
+        const aHostname = link.getAttribute('hostname');
         if (IGNORE_VALUES.has(link.innerHTML)) {
             continue
         }
         
-        const newUrl = url + aTagValue
+        //const newUrl = url + aTagValue;
+        const newUrl = aHostname + aTagValue;
         // Crawl all directories,
         if (aTagValue.endsWith('/')) {
             validLinks.push(...await crawl(newUrl, currentDepth+1, maximumDepth))
@@ -61,8 +67,8 @@ const crawl = async (url, currentDepth, maximumDepth) => {
     return validLinks
 }
 
-const getAllterNames = async () => {
-    const response = await fetch(`${BASE_TERS_URL}`)
+const getAllCharacterNames = async () => {
+    const response = await fetch(`${BASE_CHARACTERS_URL}`)
     if (response.status === 404) {
         return
     }
@@ -161,12 +167,13 @@ export const getCharacterUrls = async () => {
     document.getElementById('downloadButton').disabled = true
     document.getElementById('buttonText').style.display = 'none'
     document.getElementById('buttonLoading').style.display = 'block';
+    console.log(`${BASE_CHARACTERS_URL}${characterName}/`);
     const validUrls = await crawl(`${BASE_CHARACTERS_URL}${characterName}/`, 0, 99)
 
     // include blip sound, SoundN and frameSFX files
     await fetch(`${BASE_CHARACTERS_URL}${characterName}/char.ini`).then(resp => resp.blob()).then(blob => blob.text()).then(text => {
         const charIni = ini.parse(text.toLowerCase());
-
+        console.log(charIni);
         const blip = (charIni.options.blips != null) ? charIni.options.blips : (charIni.options.gender != null) ? charIni.options.gender : null;
         if (blip !== null && window.sfx.find((element) => element.includes(blip)))
             validUrls.push(`${BASE_SOUNDS_URL}` + "blips/" + blip + ".opus");
