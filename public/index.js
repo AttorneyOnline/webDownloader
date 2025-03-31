@@ -21,6 +21,7 @@ interface QueryParams {
 const urlParams = new URLSearchParams(window.location.search);
 
 export const BASE_URL = urlParams.get("asset") || "https://attorneyoffline.de/base/"
+export const urlURL = new URL(BASE_URL);
 export const BASE_CHARACTERS_URL = BASE_URL + "characters/"
 export const BASE_BACKGROUND_URL = BASE_URL + "background/"
 export const BASE_SOUNDS_URL = BASE_URL + "sounds/"
@@ -32,40 +33,57 @@ const IGNORE_VALUES = new Set([
     "Parent Directory"
 ])
 
-const crawl = async (url, currentDepth, maximumDepth) => {
-    if (currentDepth > maximumDepth) {
-        return
+const crawl = async (baseUrl, currentDepth, maximumDepth, visited = new Set()) => {
+    if (currentDepth > maximumDepth || visited.has(baseUrl)) {
+        return [];
     }
-    console.log(`${url}`);
-    const response = await fetch(`${url}`)
-    if (response.status === 404) {
-        return
-    }
-    // Create a fake webpage
-    const websiteDirectoryPage = await response.text()
-    const tempPage = document.createElement("html");
-    tempPage.innerHTML = websiteDirectoryPage;
 
-    const tags = tempPage.getElementsByTagName('a')
-    const validLinks = []
-    for (const link of tags) {
-        const aTagValue = link.getAttribute('href');
-        const aHostname = link.getAttribute('hostname');
-        if (IGNORE_VALUES.has(link.innerHTML)) {
-            continue
+    visited.add(baseUrl);
+    console.log(`Crawling: ${baseUrl}`);
+
+    try {
+        const response = await fetch(baseUrl);
+        if (!response.ok) {
+            console.log(`Failed to fetch ${baseUrl}: ${response.statusText}`);
+            return [];
         }
-        
-        //const newUrl = url + aTagValue;
-        const newUrl = aHostname + aTagValue;
-        // Crawl all directories,
-        if (aTagValue.endsWith('/')) {
-            validLinks.push(...await crawl(newUrl, currentDepth+1, maximumDepth))
-        } else {
-            validLinks.push(newUrl)
-        }   
+
+        const websiteDirectoryPage = await response.text();
+        const tempPage = document.createElement("html");
+        tempPage.innerHTML = websiteDirectoryPage;
+
+        const validLinks = [];
+        const tags = tempPage.getElementsByTagName('a');
+        const baseUrlObj = new URL(baseUrl);
+        const basePath = baseUrlObj.pathname;
+
+        for (const link of tags) {
+            const href = link.getAttribute('href');
+            if (!href) continue;
+
+            try {
+                const absoluteUrl = new URL(href, baseUrl).href;
+                const urlObj = new URL(absoluteUrl);
+
+                // Check if the URL is within the same subfolder
+                if (urlObj.pathname.startsWith(basePath)) {
+                    if (absoluteUrl.endsWith('/')) {
+                        validLinks.push(...await crawl(absoluteUrl, currentDepth + 1, maximumDepth, visited));
+                    } else {
+                        validLinks.push(absoluteUrl);
+                    }
+                }
+            } catch (e) {
+                console.log(`Invalid URL: ${href}`);
+            }
+        }
+
+        return validLinks;
+    } catch (error) {
+        console.error(`Error crawling ${baseUrl}:`, error);
+        return [];
     }
-    return validLinks
-}
+};
 
 const getAllCharacterNames = async () => {
     const response = await fetch(`${BASE_CHARACTERS_URL}`)
@@ -167,9 +185,8 @@ export const getCharacterUrls = async () => {
     document.getElementById('downloadButton').disabled = true
     document.getElementById('buttonText').style.display = 'none'
     document.getElementById('buttonLoading').style.display = 'block';
-    console.log(`${BASE_CHARACTERS_URL}${characterName}/`);
     const validUrls = await crawl(`${BASE_CHARACTERS_URL}${characterName}/`, 0, 99)
-
+    console.log(validUrls);
     // include blip sound, SoundN and frameSFX files
     await fetch(`${BASE_CHARACTERS_URL}${characterName}/char.ini`).then(resp => resp.blob()).then(blob => blob.text()).then(text => {
         const charIni = ini.parse(text.toLowerCase());
