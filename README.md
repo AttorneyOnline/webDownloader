@@ -2,7 +2,7 @@
 Have you ever wanted to download your favorite character from WebAO? Now you can! Type in the name of the character you want and it will zip up all of their animations and sounds.
 
 ## Setting up your own repo
-Right now this is only tested with Apache and directory indexing enabled.
+You need to have directory indexing enabled. Tested with Apache and nginx.
 You can add &asset=https://..../ to the URL to use another repository.
 
 ## Auto-download
