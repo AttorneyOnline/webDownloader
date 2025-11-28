@@ -1,3 +1,6 @@
+package-lock.json
+bun.lock
+
 # Logs
 logs
 *.log
