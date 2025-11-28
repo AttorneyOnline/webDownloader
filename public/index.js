@@ -187,6 +187,8 @@ const getAllBackgroundNames = async () => {
 const failureText = document.getElementById('downloadFeedback')
 export const getCharacterUrls = async () => {
     failureText.innerHTML = ""
+    failureText.classList.remove('text-danger');
+    failureText.classList.add('text-warning');
     const characterName = document.getElementById('characterNameInput').value
     if (window.sortedCharacters.length === 0) {
         failureText.innerHTML = "Please select a valid character name" 
@@ -202,29 +204,44 @@ export const getCharacterUrls = async () => {
     const validUrls = await crawl(`${BASE_CHARACTERS_URL}${characterName}/`, 0, 99)
     console.log(validUrls);
     // include blip sound, SoundN and frameSFX files
-    await fetch(`${BASE_CHARACTERS_URL}${characterName}/char.ini`).then(resp => resp.blob()).then(blob => blob.text()).then(text => {
-        const charIni = ini.parse(text.toLowerCase());
-        console.log(charIni);
-        const blip = (charIni.options.blips != null) ? charIni.options.blips : (charIni.options.gender != null) ? charIni.options.gender : null;
-        
-        if (blip !== null && window.sfx.find((element) => element.includes(blip)))
-            validUrls.push(`${BASE_SOUNDS_URL}` + "blips/" + blip + ".opus");
+    try {
+        await fetch(`${BASE_CHARACTERS_URL}${characterName}/char.ini`).then(resp => {
+            if (!resp.ok) {
+                throw new Error('char.ini not found');
+            }
+            return resp.blob();
+        }).then(blob => blob.text()).then(text => {
+            const charIni = ini.parse(text.toLowerCase());
+            console.log(charIni);
+            const blip = (charIni.options.blips != null) ? charIni.options.blips : (charIni.options.gender != null) ? charIni.options.gender : null;
 
-        for (const key in charIni) {
-            if (key !== "soundn" && !key.endsWith("_framesfx"))
-                continue;
+            if (blip !== null && window.sfx.find((element) => element.includes(blip)))
+                validUrls.push(`${BASE_SOUNDS_URL}` + "blips/" + blip + ".opus");
 
-            for (const value in charIni[key]) {
-                const sfx = charIni[key][value];
-                const sfxUrl = `${BASE_SOUNDS_URL}` + "general/" + sfx + ".opus";
+            for (const key in charIni) {
+                if (key !== "soundn" && !key.endsWith("_framesfx"))
+                    continue;
 
-                if (sfx != null && sfx.length > 1 && !validUrls.find((existing) => existing == sfxUrl) && window.sfx.find((element) => element.includes(sfx)))
-                {
-                    validUrls.push(sfxUrl);
+                for (const value in charIni[key]) {
+                    const sfx = charIni[key][value];
+                    const sfxUrl = `${BASE_SOUNDS_URL}` + "general/" + sfx + ".opus";
+
+                    if (sfx != null && sfx.length > 1 && !validUrls.find((existing) => existing == sfxUrl) && window.sfx.find((element) => element.includes(sfx)))
+                    {
+                        validUrls.push(sfxUrl);
+                    }
                 }
             }
-        }
-    });
+        });
+    } catch (e) {
+        failureText.innerHTML = "Error: char.ini is missing for this character.";
+        failureText.classList.remove('text-warning');
+        failureText.classList.add('text-danger');
+        document.getElementById('downloadButton').disabled = false;
+        document.getElementById('buttonText').style.display = 'block';
+        document.getElementById('buttonLoading').style.display = 'none';
+        return;
+    }
 
     await downloadAndZip(characterName, validUrls);
     return
