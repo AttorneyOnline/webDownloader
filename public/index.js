@@ -113,61 +113,75 @@ const getAllCharacterNames = async () => {
     return validLinks
 }
 const getAllSfxs = async (url) => {
-    const response = await fetch(url)
-    if (response.status === 404) {
-        return
-    }
+    try {
+        const files = [];
 
-    // Create a fake webpage
-    const websiteDirectoryPage = await response.text()
-    const tempPage = document.createElement("html");
-    tempPage.innerHTML = websiteDirectoryPage;
-
-    const tags = tempPage.getElementsByTagName('a')
-    var validLinks = []
-    for (const link of tags) {
-        const aTagValue = link.getAttribute('href')
-        if (IGNORE_VALUES.has(link.innerHTML) || aTagValue == "music/") {
-            continue
+        if (url === `${BASE_SOUNDS_URL}` || url === `${BASE_SOUNDS_URL}`.replace(/\/+$/,'')) {
+            const general = await crawl(`${BASE_SOUNDS_URL}general/`, 0, 99);
+            const blips = await crawl(`${BASE_SOUNDS_URL}blips/`, 0, 99);
+            if (Array.isArray(general)) files.push(...general);
+            if (Array.isArray(blips)) files.push(...blips);
+        } else {
+            const res = await crawl(url, 0, 99);
+            if (Array.isArray(res)) files.push(...res);
         }
 
-        // Crawl all directories,
-        if (aTagValue.endsWith('/')) {
-            const extraLinks = await getAllSfxs(url + aTagValue);
-            if (extraLinks != null)
-                validLinks = validLinks.concat(extraLinks);
-        } else
-            validLinks.push(decodeURI(url + aTagValue));
+        const filtered = Array.from(new Set(files
+            .filter(u => typeof u === 'string')
+            .filter(u => !u.endsWith('/'))
+            .map(u => decodeURI(u))
+        ));
+
+        return filtered;
+    } catch (e) {
+        console.error(`Error getting sfxs from ${url}:`, e);
+        return [];
     }
-    return validLinks
 }
 
 const getAllBackgroundNames = async () => {
-    const response = await fetch(`${BASE_BACKGROUND_URL}`)
-    if (response.status === 404) {
-        return
-    }
+    try {
+        const response = await fetch(`${BASE_BACKGROUND_URL}`)
+        if (!response.ok) return [];
 
-    // Create a fake webpage
-    const websiteDirectoryPage = await response.text()
-    const tempPage = document.createElement("html");
-    tempPage.innerHTML = websiteDirectoryPage;
+        // Create a fake webpage
+        const websiteDirectoryPage = await response.text()
+        const tempPage = document.createElement("html");
+        tempPage.innerHTML = websiteDirectoryPage;
 
-    const tags = tempPage.getElementsByTagName('a')
-    const validLinks = []
-    for (const link of tags) {
-        const aTagValue = link.getAttribute('href')
-        if (IGNORE_VALUES.has(link.innerHTML)) {
-            continue
+        const tags = tempPage.getElementsByTagName('a')
+        const validLinks = []
+        const baseUrlObj = new URL(BASE_BACKGROUND_URL);
+        const basePath = baseUrlObj.pathname;
+
+        for (const link of tags) {
+            const href = link.getAttribute('href')
+            if (!href) continue;
+            if (IGNORE_VALUES.has(link.innerHTML)) continue;
+
+            try {
+                const urlObj = new URL(href, BASE_BACKGROUND_URL);
+
+                // Only include directories that are inside the base path
+                if (!urlObj.pathname.startsWith(basePath)) continue;
+
+                if (href.endsWith('/')) {
+                    // Extract the folder name relative to the base path
+                    const relative = urlObj.pathname.slice(basePath.length).replace(/\/+$/,'')
+                    if (relative && relative !== '..') {
+                        validLinks.push(decodeURI(relative))
+                    }
+                }
+            } catch (e) {
+                console.log(`Invalid URL in backgrounds index: ${href}`)
+            }
         }
-        
-        // Crawl all directories,
-        if (aTagValue.endsWith('/')) {
-            validLinks.push(decodeURI(aTagValue.slice(0,-1)))
-        } 
-        
+
+        return validLinks
+    } catch (e) {
+        console.error('Error fetching background names:', e)
+        return []
     }
-    return validLinks
 }
 
 const failureText = document.getElementById('downloadFeedback')
@@ -192,6 +206,7 @@ export const getCharacterUrls = async () => {
         const charIni = ini.parse(text.toLowerCase());
         console.log(charIni);
         const blip = (charIni.options.blips != null) ? charIni.options.blips : (charIni.options.gender != null) ? charIni.options.gender : null;
+        
         if (blip !== null && window.sfx.find((element) => element.includes(blip)))
             validUrls.push(`${BASE_SOUNDS_URL}` + "blips/" + blip + ".opus");
 
