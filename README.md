@@ -1,5 +1,5 @@
 # Web Downloader
-Have you ever wanted to download your favorite character from WebAO? Now you can! Type in the name of the character you want and it will zip up all of their animations and sounds.
+Have you ever wanted to download your favorite character from WebAO? [Now you can!](https://attorneyonline.github.io/webDownloader/) Type in the name of the character you want and it will zip up all of their animations and sounds.
 
 ## Setting up your own repo
 You need to have directory indexing enabled. Tested with Apache and nginx.
